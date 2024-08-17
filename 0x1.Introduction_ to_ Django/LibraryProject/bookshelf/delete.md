@@ -1,3 +1,6 @@
+# Import Book class models
+from bookshelf.models import Book
+
 # Retrieve the record that you want to delete
 specific_book = Book.objects.get(title='1984') print(specific_book)
 
