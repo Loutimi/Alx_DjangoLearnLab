@@ -4,8 +4,7 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import permission_required, user_passes_test
-from .models import Library
-from .models import Book #did this duplicate import because of checker issues
+from .models import Library, Book
 from .forms import BookForm
 
 # Create your views here.
@@ -41,7 +40,7 @@ def add_book(request):
         form = BookForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('book_list')
+            return redirect('list_books')
     else:
         form = BookForm()
     return render(request, 'relationship_app/book_form.html', {'form': form})
@@ -63,7 +62,7 @@ def delete_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
         book.delete()
-        return redirect('book_list')
+        return redirect('list_books')
     return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
 
 # Helper functions to check user roles
