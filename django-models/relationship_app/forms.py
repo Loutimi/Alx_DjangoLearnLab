@@ -1,21 +1,23 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from .models import Book
 
-class UserProfileForm(UserCreationForm):
-    
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        if commit:
-            user.save()
-            # Save profile details
-            UserProfile.objects.create(
-                user='user',
-                password='password1',
-            )
-        return user
+        def save(self, commit=True):
+            user = super().save(commit=True)
+            user.set_password(self.cleaned_data['password'])
+            if commit:
+                user.save()
+            return user
+        
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ['title', 'author', 'publication_year']
