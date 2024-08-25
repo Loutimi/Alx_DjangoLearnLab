@@ -15,7 +15,7 @@ class UserProfileForm(UserCreationForm):
             user.save()
             # Save profile details
             UserProfile.objects.create(
-                user=user,
-                password=password.,
+                user='user',
+                password='password1',
             )
         return user
