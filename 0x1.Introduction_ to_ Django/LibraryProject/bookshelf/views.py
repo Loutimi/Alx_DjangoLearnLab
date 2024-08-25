@@ -1,3 +1,7 @@
 from django.shortcuts import render
 from .models import Book
-# Create your views here.
+from django.http import HttpResponse
+
+ # Create your views here.
+def index(request):
+    return HttpResponse("Welcome to the Library")
