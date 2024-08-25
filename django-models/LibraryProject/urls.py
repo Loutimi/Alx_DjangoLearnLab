@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from relationship_app.views import book_list, LibraryDetailView, add_book, delete_book, edit_book
+from relationship_app.views import list_books, LibraryDetailView, add_book, delete_book, edit_book
 from relationship_app.admin_view import admin_view
 from relationship_app.member_view import member_view
 from relationship_app.librarian_view import librarian_view
