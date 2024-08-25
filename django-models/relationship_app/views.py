@@ -11,11 +11,11 @@ from .forms import BookForm
 def list_books(request):
     books = Book.objects.all()
 
-    return render(request, 'relationship_app/templates/list_books.html', {'books':books})
+    return render(request, 'relationship_app/list_books.html', {'books':books})
 
 class LibraryDetailView(DetailView):
     model = Library
-    template_name = 'relationship_app/templates/library_detail.html'
+    template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -32,7 +32,7 @@ def register(request):
     else:
         form = UserCreationForm()
 
-    return render(request, 'relationship_app/templates/register.html', {'form': form})
+    return render(request, 'relationship_app/register.html', {'form': form})
 
 @permission_required('relationship_app.can_add_book')
 def add_book(request):
@@ -43,7 +43,7 @@ def add_book(request):
             return redirect('list_books')
     else:
         form = BookForm()
-    return render(request, 'relationship_app/templates/book_form.html', {'form': form})
+    return render(request, 'relationship_app/book_form.html', {'form': form})
 
 @permission_required('relationship_app.can_change_book')
 def edit_book(request, pk):
@@ -55,7 +55,7 @@ def edit_book(request, pk):
             return redirect('book_detail', pk=book.pk)
     else:
         form = BookForm(instance=book)
-    return render(request, 'relationship_app/templates/book_form.html', {'form': form})
+    return render(request, 'relationship_app/book_form.html', {'form': form})
 
 @permission_required('relationship_app.can_delete_book')
 def delete_book(request, pk):
@@ -63,7 +63,7 @@ def delete_book(request, pk):
     if request.method == "POST":
         book.delete()
         return redirect('list_books')
-    return render(request, 'relationship_app/templates/book_confirm_delete.html', {'book': book})
+    return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
 
 # Helper functions to check user roles
 def is_admin(user):
