@@ -5,10 +5,10 @@ from .models import Book
 admin.site.register(Book)
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'publication_year')
+    list_display = ('title', 'author', 'publication_year') # Fields to display in the list view
     
-    list_filter = ('author', 'publication_year')
+    list_filter = ('author', 'publication_year')  # Fields to filter by in the admin interface
     
-    search_fields = ('title', 'author')
+    search_fields = ('title', 'author')  # Fields to search in the admin interface
 
 admin.site.register(Book, BookAdmin)
