@@ -6,8 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic.detail import DetailView
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import user_passes_test
+
 # Create your views here.
 
 def list_books(request):
@@ -48,19 +48,6 @@ def login_view(request):
 def logout_view(request):
   logout(request)
   return redirect('home')
-
-#  Adding a UserProfile model to store user roles
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    ROLE_CHOICES = (
-        ('Admin', 'Admin'),  
-        ('Librarian', 'Librarian'),
-        ('Member', 'Member'),
-    )
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.role}"
 
 
 # Defining views that restrict access based on user roles.
