@@ -6,5 +6,5 @@ book = Book.objects.get(id=1)
 Update the title of the retrieved book
 book.title = "Nineteen Eighty-Four" book.save() print(book)
 
-Output:
+Output
 <Book: Nineteen Eighty-Four>
