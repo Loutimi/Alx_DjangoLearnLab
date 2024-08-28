@@ -54,14 +54,14 @@ def logout_view(request):
 @user_passes_test(lambda user: user.profile.role == 'Admin')
 def admin_view(request):
     # Admin-specific content
-    return render(request, 'admin_view.html')
+    return render(request, 'relationship_app/admin_view.html')
 
 @user_passes_test(lambda user: user.profile.role == 'Librarian')
 def librarian_view(request):
     # Librarian-specific content
-    return render(request, 'librarian_view.html')
+    return render(request, 'relationship_app/librarian_view.html')
 
 @user_passes_test(lambda user: user.profile.role == 'Member')
 def member_view(request):
     # Member-specific content
-    return render(request, 'member_view.html')
+    return render(request, 'relationship_app/member_view.html')
