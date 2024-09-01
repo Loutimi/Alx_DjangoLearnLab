@@ -6,6 +6,13 @@ from .models import Book
 from .forms import ExampleForm
 
 
+# Django ORM is used to safely retrieve all books, preventing SQL injection
+@permission_required("bookshelf.can_edit", raise_exception=True)
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'book_list.html', {'books':books})
+
+
 def example_view(request):
     form = ExampleForm()
     if request.method == 'POST':
@@ -52,6 +59,3 @@ def delete_book(request, book_id):
         return redirect('book_list')
     return render(request, 'bookshelf/delete_book.html', {'book': book})
 
-def book_list(request):
-    books = Book.objects.all()  # Assuming Book is your model
-    return render(request, 'bookshelf/book_list.html', {'books': books})
