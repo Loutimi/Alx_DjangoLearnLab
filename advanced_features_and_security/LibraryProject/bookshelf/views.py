@@ -52,3 +52,6 @@ def delete_book(request, book_id):
         return redirect('book_list')
     return render(request, 'bookshelf/delete_book.html', {'book': book})
 
+def book_list(request):
+    books = Book.objects.all()  # Assuming Book is your model
+    return render(request, 'bookshelf/book_list.html', {'books': books})
