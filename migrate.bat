@@ -1,4 +1,5 @@
 @echo
-python manage.py makemigrations advanced_features_and_security
+cd api_project
+python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
