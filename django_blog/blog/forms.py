@@ -2,7 +2,15 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
-from .models import Comment
+from .models import Post, Comment
+from taggit.forms import TagField
+
+class PostForm(forms.ModelForm):
+    tags = TagField()
+
+    class Meta:
+        model = Post
+        fields = ('title', 'content', 'tags')
 
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=200, required=True)
