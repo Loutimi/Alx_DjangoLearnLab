@@ -1,13 +1,12 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
-
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
 
 from .forms import CustomUserCreationForm
 from django.contrib.auth.models import User
-from .forms import CustomUserChangeForm
-from .models import Post
+from .forms import CustomUserChangeForm, CommentForm
+from .models import Post, Comment
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import UserPassesTestMixin
@@ -77,3 +76,47 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def handle_no_permission(self):
         return redirect('login')
+    
+
+class CommentCreateView(CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.post = get_object_or_404(Post, pk=kwargs['post_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.post = self.post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'post_id':self.post.id})
+
+class CommentUpdateView(UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.post = get_object_or_404(Post, pk=kwargs['post_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Comment.objects.filter(post=self.post)
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'post_id': self.post.id})
+
+class CommentDeleteView(DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+
+    def get_queryset(self):
+        return Comment.objects.filter(post=self.post)
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'post_id': self.post.id})
+    
