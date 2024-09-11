@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import UserPassesTestMixin
 
 from django.urls import reverse
-
+from django.db.models import Q
 
 class Register(CreateView):
     form_class = CustomUserCreationForm
@@ -119,4 +119,16 @@ class CommentDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('post_detail', kwargs={'post_id': self.post.id})
+    
+def search(request):
+    query = request.GET.get('q')
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        )
+    else:
+        posts = Post.objects.all()
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
     
