@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import Register, Login, ProfileView, NewPost, Posts, PostDetail, PostEdit, PostDelete, CommentCreateView, CommentDeleteView, CommentUpdateView
+from .views import Register, Login, ProfileView, NewPost, Posts, PostDetail, PostEdit, PostDelete, CommentCreateView, CommentDeleteView, CommentUpdateView, PostByTagListView, search
 
 urlpatterns = [
     path('register/', Register.as_view(), name="regiser"),
@@ -16,4 +16,6 @@ urlpatterns = [
     path('post/<int:pk>/comments/new/', CommentCreateView.as_view(), name='add_comment'),
     path('comment/<int:pk>/update/', CommentUpdateView, name='edit_comment'),
     path('comment/<int:pk>/delete/', CommentDeleteView, name='delete_comment'),
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='tag_posts'),
+    path('search/', search, name='search'),
 ]
