@@ -6,11 +6,12 @@ from .models import Post, Comment
 from taggit.forms import TagField, TagWidget
 
 class PostForm(forms.ModelForm):
-    tags = TagField(widget=TagWidget)
+    tags = TagField()
 
     class Meta:
         model = Post
         fields = ('title', 'content', 'tags')
+        widgets = {'tags': TagWidget()}
 
 class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(max_length=200, required=True)
