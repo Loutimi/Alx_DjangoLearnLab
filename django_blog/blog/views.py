@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, DeleteView, DetailView, U
 from .forms import CustomUserCreationForm
 from django.contrib.auth.models import User
 from .forms import CustomUserChangeForm, CommentForm
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .mixins import UserPassesTestMixin
@@ -119,7 +119,12 @@ class CommentDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('post_detail', kwargs={'post_id': self.post.id})
-    
+
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_list_by_tag.html'
+
 def search(request):
     query = request.GET.get('q')
     if query:
@@ -131,4 +136,7 @@ def search(request):
     else:
         posts = Post.objects.all()
     return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
+
+
+
     
