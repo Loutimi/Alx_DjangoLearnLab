@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
-from notifications.models import create_notification
+from notifications.models import Notification
 
 class PostViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
@@ -42,32 +42,36 @@ class FeedView(APIView):
         serialized_posts = PostSerializer(posts, many=True)
         return Response(serialized_posts.data)
 
-class LikePostView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+class LikePostView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        if created:
+            # create notification
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target=post
+            )
+            return Response({'status': 'liked'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'already_liked'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if Like.objects.filter(user=request.user, post=post).exists():
-            return Response({'error': 'You already liked this post'}, status=status.HTTP_400_BAD_REQUEST)
 
-        like = Like.objects.create(user=request.user, post=post)
-        serializer = PostSerializer(post)
-
-        if post.author != request.user:  # Don't notify yourself
-            create_notification(post.author, request.user, 'liked your post', post)
-
-        return Response(serializer.data)
-
-
-class UnlikePostView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+class UnlikePostView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
+
         post = get_object_or_404(Post, pk=pk)
-        like = get_object_or_404(Like, user=request.user, post=post)
-
-        like.delete()
-        serializer = PostSerializer(post)
-
-        return Response(serializer.data)
+        like = Like.objects.filter(user=request.user, post=post).first()
+        if like:
+            like.delete()
+            return Response({'status': 'unliked'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'not liked'}, status=status.HTTP_400_BAD_REQUEST)
